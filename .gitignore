@@ -5,7 +5,6 @@ server/public
 vite.config.ts.*
 *.tar.gz
 epoch=3-step=68672-001.ckpt
-qdrant_data
 ifixit data
 models
 __pycache__
