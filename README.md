@@ -6,32 +6,6 @@ An AI-powered web application that automatically evaluates instruction manuals f
 
 This application uses advanced RoBERTa-based models to analyze instruction manual steps against OSHA regulations and provide compliance evaluations. The system combines vector search with semantic similarity to identify relevant regulations and classify compliance relationships.
 
-## Project Structure
-
-```
-.
-├── osha_app/
-│   ├── src/
-│   │   ├── main.py          # FastAPI main application
-│   │   ├── model.py         # ML models and data processing
-│   │   └── nli_subapp.py    # NLI prediction endpoints
-│   └── tests/               # Test files
-├── client/                  # React frontend application
-├── server/                  # Node.js/Express backend
-├── Dockerfile              # Container configuration
-├── poetry.lock             # Python dependency lock file
-├── pyproject.toml          # Python project configuration
-└── README.md               # This file
-```
-
-## Features
-
-- **File Upload**: Drag-and-drop interface for JSON instruction manuals
-- **AI Analysis**: RoBERTa-large model for natural language inference
-- **Vector Search**: Qdrant integration for regulation similarity search
-- **Real-time Results**: Clean table display with expandable text
-- **Responsive Design**: Mobile-first layout with modern styling
-
 ## API Endpoints
 
 - `GET /app/health` - Health check endpoint
@@ -79,6 +53,11 @@ npm install
 npm run dev
 ```
 
+4. Expose the application endpoints:
+```bash
+poetry run uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
 ## Docker Deployment
 
 Build and run with Docker:
@@ -99,7 +78,3 @@ docker run -p 8000:8000 osha-evaluator
 - **Entailment**: Instruction step requires compliance with regulation
 - **Contradiction**: Instruction step conflicts with regulation  
 - **Neutral**: Instruction step is unrelated to regulation
-
-## License
-
-This project is for educational and research purposes.
