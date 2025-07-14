@@ -488,7 +488,7 @@ class PremiseHypothesisDataset(Dataset):
     def __init__(self,
                  tokenizer,
                  max_length: int = 128,
-                 top_k: int = 3,
+                 top_k: int = 10,
                  threshold: int = 0,
                  chunked_steps: pd.DataFrame = None,
                  vector_client: Optional[QdrantClient]=None,
