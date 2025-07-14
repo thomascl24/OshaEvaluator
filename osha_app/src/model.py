@@ -70,7 +70,12 @@ class PromptConstruction:
 
     # Wrap the iterrows() with tqdm for progress tracking
     for id, row in tqdm(self.chunked_steps[['category', 'step_text']].iterrows(), total=self.chunked_steps.shape[0], desc="Processing Rows"):
-        query = f"What regulation is related most closely to the following text?\n{row['step_text']}"
+        query = f"""You are an OSHA compliance assistant. Given the following manufacturing step, identify the most relevant OSHA regulation that applies.
+
+        Step: {row['step_text']}
+
+        Regulation:
+        """
         similar_docs = self.doc_search(query)
 
         doc_id = 0
