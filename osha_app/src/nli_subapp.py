@@ -16,7 +16,7 @@ import os
 import numpy as np
 import io
 
-from model import ManualChunker, ExplainNLP, Predictor
+from model import ManualChunker, ExplainNLP, Predictor, DocConverter
 from qdrant_client import QdrantClient
 
 
@@ -70,16 +70,26 @@ class Output(BaseModel):
 async def chunk_manual(file: UploadFile = File(...)):
     """Accept a JSON‑lines upload and return DataFrame rows as JSON."""
     print(f"Received file: {file.filename}, content_type: {file.content_type}")
+    
+    if file.filename.lower().endswith(".pdf"):
+        contents = await file.read()
 
-    if file.content_type not in {"application/json", "text/plain"}:
+        try:
+            converter = DocConverter(contents)
+            json_data = converter.pdf_to_json()
+
+            df = ManualChunker(json_data).chunk_data()
+        except:
+            raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {e}")
+    elif file.content_type in {"application/json", "text/plain"}:
+        # Treat the underlying SpooledTemporaryFile as text
+        text_stream = io.TextIOWrapper(file.file, encoding="utf-8")
+        df = ManualChunker(text_stream).chunk_data()
+    else:
         raise HTTPException(
-            415, detail="Upload must be JSON‑lines (.jsonl) text."
+            415, detail="Upload must be a PDF or JSON‑lines (.jsonl) text."
         )
 
-    # Treat the underlying SpooledTemporaryFile as text
-    text_stream = io.TextIOWrapper(file.file, encoding="utf-8")
-
-    df = ManualChunker(text_stream).chunk_data()
     predictor = Predictor(
         model=model, 
         batch_size=3, 

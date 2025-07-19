@@ -16,8 +16,10 @@ export function FileUpload({ onFileSelect, selectedFile, disabled }: FileUploadP
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = useCallback((file: File): boolean => {
-    if (file.type !== 'application/json') {
-      setError('Please select a JSON file.');
+    const allowedTypes = ['application/json', 'application/pdf'];
+
+    if (!allowedTypes.includes(file.type)) {
+      setError('Please select a JSON or PDF file.');
       return false;
     }
     setError(null);
@@ -89,7 +91,7 @@ export function FileUpload({ onFileSelect, selectedFile, disabled }: FileUploadP
         <input
           ref={fileInputRef}
           type="file"
-          accept=".json"
+          accept=".json,.pdf,application/json,application/pdf"
           className="hidden"
           onChange={handleInputChange}
           disabled={disabled}
@@ -126,7 +128,7 @@ export function FileUpload({ onFileSelect, selectedFile, disabled }: FileUploadP
               <p className="text-sm text-slate-600">
                 <span className="font-medium text-primary">Click to upload</span> or drag and drop
               </p>
-              <p className="text-xs text-slate-500 mt-1">JSON files only</p>
+              <p className="text-xs text-slate-500 mt-1">JSON or PDF files only</p>
             </div>
           </div>
         )}

@@ -35,16 +35,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if file has .json extension
-      const isJsonExtension = req.file.originalname?.endsWith('.json');
-      if (!isJsonExtension) {
+      const allowedExtenstions = ['.json', '.pdf'];
+      const hasAllowedExtension = allowedExtenstions.some(ext => 
+        req.file.originalname?.toLowerCase().endsWith(ext)
+      );
+
+      if (!hasAllowedExtension) {
         return res.status(415).json({ 
-          error: "Please upload a .json file" 
+          error: "Please upload a .json or .pdf file" 
         });
       }
 
       // Create FormData to forward to FastAPI
       const formData = new FormData();
-      const blob = new Blob([req.file.buffer], { type: 'application/json' });
+      const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
       formData.append('file', blob, req.file.originalname);
 
       // Forward request to FastAPI service
@@ -53,7 +57,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         body: formData
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type") || "";
+
+      let data;
+      if (contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        throw new Error(`Non-JSON response from FastAPI: ${text}`);
+      }
+      
       res.status(response.status).json(data);
 
     } catch (error) {

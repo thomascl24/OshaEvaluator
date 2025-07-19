@@ -90,6 +90,44 @@ class PromptConstruction:
 
 from typing import TextIO, Iterable
 import pandas as pd, json
+import fitz
+from io import StringIO
+
+class DocConverter:
+    """Converts pdf files into json for input into the model"""
+    def __init__(self, file_bytes):
+        self.doc = fitz.open(stream=file_bytes, filetype='pdf')
+    def pdf_to_json(self):
+        output = StringIO()
+        
+        steps = []
+        for page in self.doc:
+            page_text = page.get_text().strip()
+            if not page_text:
+                continue
+
+            step_lines = [
+                {'Text': line.strip()} for line in page_text.split('\n') if line.strip()
+            ]
+
+            if step_lines:
+                steps.append({
+                    'Lines': step_lines,
+                    'Toolbox': [],
+                    'Parts': [],
+                    'Verbs': []
+                })
+            
+        record = {
+            'Title': 'Converted PDF Document',
+            'Category': 'pdf',
+            'Steps': steps
+        }
+
+        output.write(json.dumps(record) + '\n')
+        output.seek(0)
+        return output
+
 
 class ManualChunker:
     def __init__(self, lines: Iterable[str]):
