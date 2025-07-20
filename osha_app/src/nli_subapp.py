@@ -71,7 +71,7 @@ class Output(BaseModel):
     predictions: list[str]
     premises: list[str]
     hypotheses: list[str]
-    reasons: list[str]
+    # reasons: list[str]
 
 @subapp.post("/predict")
 async def chunk_manual(file: UploadFile = File(...)):
@@ -111,7 +111,7 @@ async def chunk_manual(file: UploadFile = File(...)):
         predictions=res['predictions'],
         premises=res['premises'],
         hypotheses=res['hypotheses'],
-        reasons=res['reasons']
+        # reasons=res['reasons']
     )
 
 @subapp.get("/health")
