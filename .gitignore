@@ -8,3 +8,4 @@ epoch=3-step=68672-001.ckpt
 ifixit data
 models
 __pycache__
+*.ckpt
