@@ -94,30 +94,30 @@ import fitz
 from io import StringIO
 
 class DocConverter:
-    """Converts pdf files into json for input into the model"""
+    """Converts each line of a PDF into a separate step for downstream chunking."""
     def __init__(self, file_bytes):
         self.doc = fitz.open(stream=file_bytes, filetype='pdf')
+
     def pdf_to_json(self):
         output = StringIO()
-        
         steps = []
+
         for page in self.doc:
             page_text = page.get_text().strip()
             if not page_text:
                 continue
 
-            step_lines = [
-                {'Text': line.strip()} for line in page_text.split('\n') if line.strip()
-            ]
-
-            if step_lines:
+            for line in page_text.split('\n'):
+                line = line.strip()
+                if not line:
+                    continue
                 steps.append({
-                    'Lines': step_lines,
+                    'Lines': [{'Text': line}],
                     'Toolbox': [],
                     'Parts': [],
                     'Verbs': []
                 })
-            
+
         record = {
             'Title': 'Converted PDF Document',
             'Category': 'pdf',
@@ -127,7 +127,6 @@ class DocConverter:
         output.write(json.dumps(record) + '\n')
         output.seek(0)
         return output
-
 
 class ManualChunker:
     def __init__(self, lines: Iterable[str]):
@@ -175,6 +174,15 @@ class ManualChunker:
                         }
                     )
                     chunk, words = [], 0
+            if chunk:
+                records.append({
+                    "title":    title,
+                    "category": category,
+                    "step_text": " ".join(c["text"] for c in chunk),
+                    "tools":    [t for c in chunk for t in c["tools"]],
+                    "parts":    [p for c in chunk for p in c["parts"]],
+                    "verbs":    [v for c in chunk for v in c["verbs"]],
+                })
 
         df = pd.DataFrame(records)
         return (

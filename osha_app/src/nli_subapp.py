@@ -19,6 +19,12 @@ import io
 from model import ManualChunker, ExplainNLP, Predictor, DocConverter
 from qdrant_client import QdrantClient
 
+import logging
+import json
+logger = logging.getLogger(__name__)
+
+logger.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
 
@@ -77,19 +83,20 @@ async def chunk_manual(file: UploadFile = File(...)):
         try:
             converter = DocConverter(contents)
             json_data = converter.pdf_to_json()
+            text_stream = io.TextIOWrapper(json_data, encoding="utf-8")
 
-            df = ManualChunker(json_data).chunk_data()
+            logger.debug(json_data)
         except:
             raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {e}")
     elif file.content_type in {"application/json", "text/plain"}:
         # Treat the underlying SpooledTemporaryFile as text
         text_stream = io.TextIOWrapper(file.file, encoding="utf-8")
-        df = ManualChunker(text_stream).chunk_data()
     else:
         raise HTTPException(
             415, detail="Upload must be a PDF or JSON‑lines (.jsonl) text."
         )
 
+    df = ManualChunker(json_data).chunk_data()
     predictor = Predictor(
         model=model, 
         batch_size=3, 
