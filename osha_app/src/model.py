@@ -28,6 +28,9 @@ import re
 import xml.etree.ElementTree as et
 from typing import List, Optional
 
+from openai import OpenAI
+import os
+
 class PromptConstruction:
   def __init__(self, k, threshold, chunked_steps, vector_client, vector_collection, embeddings):
     self.top_k = k
@@ -487,6 +490,7 @@ hf_embeddings = HuggingFaceEmbeddings(
 )
 
 
+
 class PremiseHypothesisDataset(Dataset):
     _label2id = {"contradiction": 0, "neutral": 1, "entailment": 2}
 
@@ -537,50 +541,83 @@ class PremiseHypothesisDataset(Dataset):
 
         return input_ids, label, length
     
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or "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")
+
+from openai import OpenAI
+import os
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or "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")
+
+def classify_osha_nli(premise, hypothesis, model="gpt-4o-mini"):
+    prompt = f"""
+    You are performing a Natural Language Inference (NLI) classification for workplace safety.
+
+    - The *premise* is a work order instruction.
+    - The *hypothesis* is an OSHA safety guideline.
+
+    Your job is to decide if the premise:
+    - **Entailment**: Clearly follows or supports the OSHA guideline.
+    - **Contradiction**: Conflicts with or violates the OSHA guideline.
+    - **Neutral**: Is unrelated or does not provide enough information.
+
+    Respond in EXACTLY this format:
+    - Start with ONLY one of: "Neutral.", "Entailment.", or "Contradiction."
+    - After the period, give **one short sentence explaining why.**
+
+    Example valid outputs:
+    - Entailment. The instruction requires PPE, which aligns with the OSHA guideline.
+    - Contradiction. The instruction removes PPE requirements, opposing the guideline.
+    - Neutral. The instruction is about scheduling and does not relate to safety.
+
+    Premise (work order instruction):
+    {premise}
+
+    Hypothesis (OSHA guideline):
+    {hypothesis}
+    """
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
+    )
+    return response.choices[0].message.content.strip()
+
+
 class Predictor:
-  def __init__(self, model, out_path: str=None, batch_size: int=32, num_workers: int=2, device: str=None, chunked_steps: pd.DataFrame=None, vector_client: Optional[QdrantClient]=None):
-    self.model = model
-    self.out_path = out_path
-    self.batch_size = batch_size
-    self.num_workers = num_workers
-    self.device = device
-    self.chunked_steps=chunked_steps
-    self.client = vector_client
+    def __init__(self, model, out_path: str=None, batch_size: int=32, num_workers: int=2, device: str=None, chunked_steps: pd.DataFrame=None, vector_client=None):
+        self.model = model
+        self.out_path = out_path
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.device = device
+        self.chunked_steps = chunked_steps
+        self.client = vector_client
 
-  def predict(self):
-      device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def predict(self):
+        dataset = PremiseHypothesisDataset(
+            tokenizer=None,  # tokenizer not needed for GPT
+            max_length=128,
+            chunked_steps=self.chunked_steps,
+            vector_client=self.client
+        )
 
-      self.model.eval()
-      self.model.to(device)
+        predictions, premises, hypotheses = [], [], []
 
-      dataset   = PremiseHypothesisDataset(self.model.tokenizer,
-                                          max_length=self.model.args["max_length"],
-                                           chunked_steps=self.chunked_steps, vector_client=self.client)
-      dataloader = DataLoader(dataset,
-                              batch_size=self.batch_size,
-                              num_workers=self.num_workers,
-                              shuffle=False,
-                              collate_fn=partial(collate_to_max_length,
-                                                max_len=None,
-                                                fill_values=[1, 0, 0])
-                              )
+        for sample in dataset.samples:
+            premise = sample["premise"]
+            hypothesis = sample["hypothesis"]
 
+            # call GPT for classification
+            gpt_result = classify_osha_nli(premise, hypothesis)
 
-      id2label = {0: "contradiction", 1: "neutral", 2: "entailment"}
-      predictions: List[str] = []
+            predictions.append(gpt_result)
+            premises.append(premise)
+            hypotheses.append(hypothesis)
 
-      # 2.3  Inference loop
-      with torch.no_grad():
-          for batch in tqdm(dataloader):
-              # move everything to the same device
-              batch = [x.to(device) for x in batch]
-              input_ids, labels, length, start_idxs, end_idxs, span_masks = batch
-
-              logits, _ = self.model(input_ids, start_idxs, end_idxs, span_masks)
-              preds = torch.argmax(torch.softmax(logits, dim=-1), dim=-1)  # [bs]
-
-              predictions.extend(id2label[p.item()] for p in preds)
-
-      return {'predictions': predictions, 
-              'hypotheses': list([samp['hypothesis'] for samp in dataset.samples]), 
-              'premises': list([samp['premise'] for samp in dataset.samples])} 
+        return {
+            "predictions": predictions,
+            "premises": premises,
+            "hypotheses": hypotheses
+        }
+ 
