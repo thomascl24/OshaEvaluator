@@ -591,13 +591,13 @@ class Predictor:
 
     def predict(self):
         dataset = PremiseHypothesisDataset(
-            tokenizer=None,  # tokenizer not needed for GPT
+            tokenizer=None,
             max_length=128,
             chunked_steps=self.chunked_steps,
             vector_client=self.client
         )
 
-        predictions, premises, hypotheses = [], [], []
+        predictions, premises, hypotheses, reasons = [], [], [], []
 
         for sample in dataset.samples:
             premise = sample["premise"]
@@ -606,13 +606,23 @@ class Predictor:
             # call GPT for classification
             gpt_result = classify_osha_nli(premise, hypothesis)
 
-            predictions.append(gpt_result)
+            # split into label + reason
+            if "." in gpt_result:
+                label_part, reason_part = gpt_result.split(".", 1)
+                label_part = label_part.strip() + "."         # "Entailment."
+                reason_part = reason_part.strip()             # "The instruction requires PPE..."
+            else:
+                label_part = gpt_result.strip()
+                reason_part = ""
+
+            predictions.append(label_part)
+            reasons.append(reason_part)
             premises.append(premise)
             hypotheses.append(hypothesis)
 
         return {
             "predictions": predictions,
             "premises": premises,
-            "hypotheses": hypotheses
+            "hypotheses": hypotheses,
+            "reasons": reasons
         }
- 
