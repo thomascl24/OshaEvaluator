@@ -90,7 +90,7 @@ async def chunk_manual(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {e}")
     elif file.content_type in {"application/json", "text/plain"}:
         # Treat the underlying SpooledTemporaryFile as text
-        text_stream = io.TextIOWrapper(file.file, encoding="utf-8")
+        json_data = io.TextIOWrapper(file.file, encoding="utf-8")
     else:
         raise HTTPException(
             415, detail="Upload must be a PDF or JSON‑lines (.jsonl) text."
