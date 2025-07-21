@@ -541,12 +541,7 @@ class PremiseHypothesisDataset(Dataset):
 
         return input_ids, label, length
     
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or "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")
-
-from openai import OpenAI
-import os
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or "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")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") 
 
 def classify_osha_nli(premise, hypothesis, model="gpt-4o-mini"):
     prompt = f"""
