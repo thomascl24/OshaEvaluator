@@ -30,7 +30,7 @@ async def lifespan_mechanism(app: FastAPI):
 
     # Load the Model on Startup
     global model
-    model = ExplainNLP.load_from_checkpoint('./epoch=3-step=68672-001.ckpt')
+    model = None
 
     # Load the vector datastore
     print('Loading vector store...')
