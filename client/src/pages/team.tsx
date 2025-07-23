@@ -2,13 +2,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import kennethImg  from "../images/kenneth.png";
+import rajImg      from "../images/raj.png";
+import thomasImg   from "../images/thomas.png";
+import victoriaImg from "../images/victoria.png";
 
 export default function Team() {
   const people = [
-    { id: 1, name: "Kenneth Hahn",  role: "Data Scientist", image: "/images/kenneth.png" },
-    { id: 2, name: "Raj Jagannath", role: "Data Scientist", image: "/images/team/raj.png" },
-    { id: 3, name: "Thomas Lee",    role: "Data Scientist", image: "/images/team/thomas.png" },
-    { id: 4, name: "Victoria Brendel", role: "Data Scientist", image: "/images/team/victoria.png" }
+    { 
+      id: 1, 
+      name: "Kenneth Hahn",  
+      role: "Data Scientist",
+      description: "The data scientist.",
+      image: kennethImg 
+    },
+    { 
+      id: 2, 
+      name: "Raj Jagannath", 
+      role: "Data Scientist", 
+      description: "The data scientist.",
+      image: rajImg 
+    },
+    { 
+      id: 3, 
+      name: "Thomas Lee",    
+      role: "Data Scientist", 
+      description: "The data scientist.",
+      image: thomasImg 
+    },
+    { 
+      id: 4, 
+      name: "Victoria Brendel", 
+      role: "Data Scientist", 
+      description: "The data scientist.",
+      image: victoriaImg 
+    }
   ];
 
   return (
@@ -43,10 +71,21 @@ export default function Team() {
                 height={72}
                 className="rounded-full object-cover"
               />
-              <div className="space-y-1">
-                <h4 className="text-lg font-semibold text-slate-900">{person.name}</h4>
-                <p className="text-sm text-primary font-medium">{person.role}</p>
+
+              {/* Text block */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+                {/* Name + role (left side) */}
+                <div>
+                  <h4 className="text-lg font-semibold text-slate-900">{person.name}</h4>
+                  <p className="text-sm text-primary font-medium">{person.role}</p>
+                </div>
+
+                {/* Description (right side on ≥ 640 px; below on mobile) */}
+                <p className="text-slate-700 mt-2 sm:mt-0 sm:ml-4">
+                  {person.description}
+                </p>
               </div>
+
             </div>
           ))}
         </CardContent>

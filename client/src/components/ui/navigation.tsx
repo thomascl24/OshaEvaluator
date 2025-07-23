@@ -38,6 +38,17 @@ export function Navigation() {
             >
               About
             </Link>
+            <Link 
+              href="/team"
+              className={cn(
+                "font-medium transition-colors duration-200",
+                location === "/team" 
+                  ? "text-slate-700" 
+                  : "text-slate-500 hover:text-primary"
+              )}
+            >
+              Team
+            </Link>
           </div>
         </div>
       </div>
