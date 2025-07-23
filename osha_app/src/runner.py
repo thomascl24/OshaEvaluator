@@ -30,7 +30,8 @@ if __name__=="__main__":
 
     print('Initializing predictor...')
 
-    model = ExplainNLP.load_from_checkpoint('./osha_app/src/epoch=3-step=68672-001.ckpt')
+    #model = ExplainNLP.load_from_checkpoint('./osha_app/src/epoch=3-step=68672-001.ckpt')
+    model = None
     predictor = Predictor(
         model=model, 
         batch_size=3, 
