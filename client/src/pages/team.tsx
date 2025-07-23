@@ -13,27 +13,32 @@ export default function Team() {
       id: 1, 
       name: "Kenneth Hahn",  
       role: "Data Scientist",
-      description: "The data scientist.",
+      email:"hahnkenneth@berkeley.edu",
+      description: `Data scientist with four years of manufaturing engineering experience, driving efficiency improvements for Tesla and P&G. 
+      Current MIDS student at UC Berkeley with an undergraduate degree in Chemical Engineering from UC Berkeley.`,
       image: kennethImg 
     },
     { 
       id: 2, 
       name: "Raj Jagannath", 
-      role: "Data Scientist", 
+      role: "Backend Engineer", 
+      email:"rjagan@berkeley.edu",
       description: "The data scientist.",
       image: rajImg 
     },
     { 
       id: 3, 
       name: "Thomas Lee",    
-      role: "Data Scientist", 
+      role: "Frontend Engineer", 
+      email:"thomascl@berkeley.edu",
       description: "The data scientist.",
       image: thomasImg 
     },
     { 
       id: 4, 
       name: "Victoria Brendel", 
-      role: "Data Scientist", 
+      role: "Machine Learning Engineer", 
+      email: "victoriabrendel@berkeley.edu",
       description: "The data scientist.",
       image: victoriaImg 
     }
@@ -44,7 +49,7 @@ export default function Team() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-3xl font-light text-slate-900 mb-3">The Team</h2>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto">Meet the Team</p>
+        <p className="text-lg text-slate-600 max-w-2xl mx-auto">Learn more about the team behind the project</p>
       </div>
 
       {/* Back to Home */}
@@ -78,6 +83,7 @@ export default function Team() {
                 <div>
                   <h4 className="text-lg font-semibold text-slate-900">{person.name}</h4>
                   <p className="text-sm text-primary font-medium">{person.role}</p>
+                  <p className="text-sm text-primary text-slate-600">{person.email}</p>
                 </div>
 
                 {/* Description (right side on ≥ 640 px; below on mobile) */}

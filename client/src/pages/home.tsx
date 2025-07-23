@@ -13,6 +13,7 @@ interface EvaluationResult {
   predictions: string[];
   premises: string[];
   hypotheses: string[];
+  reasons: string[];
 }
 
 export default function Home() {
@@ -154,12 +155,16 @@ export default function Home() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Evaluation
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Explanation
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-slate-200">
                   {results.predictions.map((prediction, index) => {
                     const premise = results.premises[index] || '';
                     const hypothesis = results.hypotheses[index] || '';
+                    const reason = results.reasons[index] || '';
                     
                     return (
                       <tr key={index} className="hover:bg-slate-50">
@@ -173,6 +178,9 @@ export default function Home() {
                           <Badge className={getEvaluationBadgeClass(prediction)}>
                             {prediction}
                           </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-900">
+                          <ExpandableText text={reason} />
                         </td>
                       </tr>
                     );
