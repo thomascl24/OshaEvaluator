@@ -29,6 +29,8 @@ import xml.etree.ElementTree as et
 from typing import List, Optional
 
 from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv()
 
 class PromptConstruction:
   def __init__(self, k, threshold, chunked_steps, vector_client, vector_collection, embeddings):
