@@ -655,7 +655,7 @@ class Predictor:
             # split into label + reason
             if "." in gpt_result:
                 label_part, reason_part = gpt_result.split(".", 1)
-                label_part = label_part.strip() + "."         # "Entailment."
+                label_part = label_part.strip()         # "Entailment."
                 reason_part = reason_part.strip()             # "The instruction requires PPE..."
             else:
                 label_part = gpt_result.strip()
