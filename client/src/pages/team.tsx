@@ -23,7 +23,8 @@ export default function Team() {
       name: "Raj Jagannath", 
       role: "Backend Engineer", 
       email:"rjagan@berkeley.edu",
-      description: "The data scientist.",
+      description: `Data scientist with 3 years of software engineering experience at HPE Aruba Networking working on test automation and DevOps.
+      Current MIDS student at UC Berkeley with an BS in Computer Science and minor in Managerial Economics from UC Davis.`,
       image: rajImg 
     },
     { 
