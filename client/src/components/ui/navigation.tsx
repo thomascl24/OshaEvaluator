@@ -49,6 +49,14 @@ export function Navigation() {
             >
               Team
             </Link>
+            <a
+              href="https://github.com/thomascl24/OshaEvaluator/tree/main"
+              className="font-medium text-slate-500 hover:text-primary transition-colors duration-200"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
           </div>
         </div>
       </div>

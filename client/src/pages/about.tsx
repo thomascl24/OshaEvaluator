@@ -2,8 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import examplePDF from "../docs/example.pdf";
 
 export default function About() {
+  const example = {
+    Title: "Replacing a Car Tire",
+    Steps: ["Step 1...", "Step 2..."]
+  }
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -42,7 +47,23 @@ export default function About() {
           <div>
             <h4 className="text-lg font-semibold text-slate-900 mb-3">How It Works</h4>
             <ol className="list-decimal list-inside text-slate-700 space-y-2 leading-relaxed">
-              <li>Upload your instruction manual in JSON format</li>
+              <li>Upload your instruction manual in JSONL or PDF format</li>
+                  <ul className="list-disc pl-6 mt-1 space-y-1 space-x-1">
+                    <li>JSONL files are flexible and allow the user to input multiple manuals with each new line having a dictionary with the following format:</li>
+                    <pre className="bg-slate-700 text-white text-sm p-4 rounded-md overflow-x-auto whitespace-pre">
+                      <code>{JSON.stringify(example, null, 4)}</code>
+                    </pre>
+                    <li>PDF manuals will be processed in a line by line format, where each line will be considered a step (pictures will not be processed)
+                    an example PDF manual is shown below:  
+                    </li>
+                    <embed
+                      src={examplePDF}           /* or a remote URL / Blob URL */
+                      type="application/pdf"
+                      width="100%"                       /* full‑width */
+                      height="500"                       /* fixed height – make this responsive if you like */
+                      className="rounded-md shadow"
+                    />
+                  </ul>
               <li>The system extracts and processes individual instruction steps</li>
               <li>Each step is analyzed against a comprehensive OSHA regulation database</li>
               <li>Relevant regulations are identified and compliance evaluations are generated</li>
@@ -58,7 +79,6 @@ export default function About() {
               regulatory mapping and compliance assessment.
             </p>
           </div>
-
           <div>
             <h4 className="text-lg font-semibold text-slate-900 mb-3">Evaluation Types</h4>
             <div className="space-y-2">
@@ -81,9 +101,44 @@ export default function About() {
             <h4 className="text-lg font-semibold text-slate-900 mb-3">Version History</h4>
             <div className="space-y-3">
               <div className="border-l-4 border-primary pl-4">
+                <p className="font-medium text-slate-900">Version 1.1.1</p>
+                <p className="text-sm text-slate-600">Added new Team page and further enhanced About page</p>
+                <p className="text-xs text-slate-500">Released: July 2025</p>
+              </div>
+            </div> 
+            <div className="space-y-3">
+              <div className="border-l-4 border-primary pl-4">
+                <p className="font-medium text-slate-900">Version 1.1.0</p>
+                <p className="text-sm text-slate-600">Updated Predictor class with OpenAI API</p>
+                <p className="text-xs text-slate-500">Released: July 2025</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="border-l-4 border-primary pl-4">
+                <p className="font-medium text-slate-900">Version 1.0.3</p>
+                <p className="text-sm text-slate-600">Enhanced frontend with About page and tabular output on home page</p>
+                <p className="text-xs text-slate-500">Released: July 2025</p>
+              </div>
+            </div> 
+            <div className="space-y-3">
+              <div className="border-l-4 border-primary pl-4">
+                <p className="font-medium text-slate-900">Version 1.0.2</p>
+                <p className="text-sm text-slate-600">Improved RAG with threshold improvements</p>
+                <p className="text-xs text-slate-500">Released: July 2025</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="border-l-4 border-primary pl-4">
+                <p className="font-medium text-slate-900">Version 1.0.1</p>
+                <p className="text-sm text-slate-600">Refactored pipeline and bug fixes</p>
+                <p className="text-xs text-slate-500">Released: July 2025</p>
+              </div>
+            </div>              
+            <div className="space-y-3">
+              <div className="border-l-4 border-primary pl-4">
                 <p className="font-medium text-slate-900">Version 1.0.0</p>
                 <p className="text-sm text-slate-600">Initial release with RoBERTa-large model and vector store integration</p>
-                <p className="text-xs text-slate-500">Released: January 2025</p>
+                <p className="text-xs text-slate-500">Released: June 2025</p>
               </div>
             </div>
           </div>
