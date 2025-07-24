@@ -8,15 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { FileUpload } from "@/components/ui/file-upload";
 import { ExpandableText } from "@/components/ui/expandable-text";
 import { getEvaluationBadgeClass } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
+
 
 interface EvaluationResult {
   predictions: string[];
   premises: string[];
   hypotheses: string[];
   reasons: string[];
+  compliance_score: number;
 }
 
 export default function Home() {
+  const { toast } = useToast(); 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [results, setResults] = useState<EvaluationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,8 +44,14 @@ export default function Home() {
     onSuccess: (data: EvaluationResult) => {
       setResults(data);
       setError(null);
+      toast({ // 3. show popup
+        title: "Evaluation complete!",
+        description: "Overall compliance score: " + data['compliance_score'] + "%",
+        variant: "success",
+      });
+      
     },
-    onError: (error: Error) => {
+    onError: (error: Error) => {      
       setError(`Failed to process file: ${error.message}`);
       setResults(null);
     },
