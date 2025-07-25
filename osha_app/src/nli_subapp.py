@@ -73,6 +73,7 @@ class Output(BaseModel):
     premises: list[str]
     hypotheses: list[str]
     reasons: list[str]
+    compliance_score: float
 
 @subapp.post("/predict")
 async def chunk_manual(file: UploadFile = File(...)):
@@ -111,7 +112,8 @@ async def chunk_manual(file: UploadFile = File(...)):
         predictions=res['predictions'],
         premises=res['premises'],
         hypotheses=res['hypotheses'],
-        reasons = res['reasons']
+        reasons = res['reasons'],
+        compliance_score=round(sum([1 if pred == 'Entailment' else 0.5 if pred == "Neutral" else 0 for pred in res['predictions']])/len(res['predictions'])*100, 2)
     )
 
 @subapp.get("/health")
