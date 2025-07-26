@@ -40,8 +40,8 @@ export default function Team() {
       name: "Victoria Brendel", 
       role: "Machine Learning Engineer", 
       email: "victoriabrendel@berkeley.edu",
-      description: `Data scientist with 2 years of experience in manufacturing operations. Currently employed as an operations engineer at SpaceX
-      working on Falcon and Dragon production. Current MIDS student at UC Berkeley with a BA in Astrophysics from UC Berkeley.`,
+      description: `Data scientist with 2 years of experience in manufacturing operations. Employed as an operations engineer at SpaceX
+      supporting Falcon and Dragon production. Current MIDS student at UC Berkeley with a BA in Astrophysics from UC Berkeley.`,
       image: victoriaImg 
     }
   ];
