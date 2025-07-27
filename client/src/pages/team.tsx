@@ -32,7 +32,7 @@ export default function Team() {
       name: "Thomas Lee",    
       role: "Frontend Engineer", 
       email:"thomascl@berkeley.edu",
-      description: "The data scientist.",
+      description: "Aspiring data scientist with two years of experience in machine learning engineering. Employed as a data science intern at the East Bay Municipal Utility District supporting the finance department with water projections and pipeline failure prediction. Current MIDS student at UC Berkeley with an undergraduate degree in Computer Science and minor in Data Science.",
       image: thomasImg 
     },
     { 
