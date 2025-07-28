@@ -113,7 +113,8 @@ async def chunk_manual(file: UploadFile = File(...)):
         premises=res['premises'],
         hypotheses=res['hypotheses'],
         reasons = res['reasons'],
-        compliance_score=round(sum([1 if pred == 'Entailment' else 0.5 if pred == "Neutral" else 0 for pred in res['predictions']])/len(res['predictions'])*100, 2)
+        # compliance_score=round(sum([res if pred == 'Entailment' else 0.5 if pred == "Neutral" else 0 for pred in res['predictions']])/len(res['predictions'])*100, 2)
+        compliance_score=np.clip(sum([res['scores'][i] if res['predictions'][i] == 'Entailment' else 0.8 * res["scores"]["i"] if res['predictions'][i] == "Neutral" else 1 - (np.exp(res["scores"][i] - 1)) for i in range(len(res['predictions']))])/len(res['predictions']), 0, 1) * 100
     )
 
 @subapp.get("/health")
