@@ -643,11 +643,12 @@ class Predictor:
             vector_client=self.client
         )
 
-        predictions, premises, hypotheses, reasons = [], [], [], []
+        predictions, premises, hypotheses, reasons, scores = [], [], [], [], []
 
         for sample in dataset.samples:
             premise = sample["premise"]
             hypothesis = sample["hypothesis"]
+            score = sample["score"]
 
             # call GPT for classification
             gpt_result = classify_osha_nli(premise, hypothesis)
@@ -666,9 +667,18 @@ class Predictor:
             premises.append(premise)
             hypotheses.append(hypothesis)
 
+            # if label_part == "Entailment":
+            #     pass # score is 1.0
+            # elif label_part == "Neutral":
+            #     score *= 0.8
+            # else:  # Contradiction
+            #     score
+            scores.append(score)
+
         return {
             "predictions": predictions,
             "premises": premises,
             "hypotheses": hypotheses,
-            "reasons": reasons
+            "reasons": reasons,
+            "scores": scores
         }
