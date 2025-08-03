@@ -175,6 +175,13 @@ export default function Home() {
                     const premise = results.premises[index] || '';
                     const hypothesis = results.hypotheses[index] || '';
                     const reason = results.reasons[index] || '';
+
+                    const displayPrediction =
+                      prediction.toLowerCase() === 'entailment'
+                      ? 'Compliant'
+                      : prediction.toLowerCase() === 'contradiction'
+                      ? 'Violation'
+                      : prediction; // “neutral” (or anything else) stays the same
                     
                     return (
                       <tr key={index} className="hover:bg-slate-50">
@@ -186,7 +193,7 @@ export default function Home() {
                         </td>
                         <td className="px-6 py-4">
                           <Badge className={getEvaluationBadgeClass(prediction)}>
-                            {prediction}
+                            {displayPrediction}
                           </Badge>
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-900">

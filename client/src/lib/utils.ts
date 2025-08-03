@@ -20,8 +20,10 @@ export function truncateText(text: string, maxLength: number = 150): string {
 
 export function getEvaluationBadgeClass(prediction: string): string {
   switch (prediction.toLowerCase()) {
+    case 'compliant':
     case 'entailment':
       return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+    case 'violation':
     case 'contradiction':
       return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
     case 'neutral':
